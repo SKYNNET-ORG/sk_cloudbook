@@ -5,10 +5,10 @@ rem Configuracion:
 set modo=1
 
 :: A continuacion introduce las rutas correctas de tu programa (ojo, entre comillas dobles)
-set ruta_deployer="C:\Users\jramosdi\Desktop\Juan\SkyNNet\Orig_Cloudbook\cloudbook_deployer-master"
-set ruta_launcher="C:\Users\jramosdi\Desktop\Juan\SkyNNet\Orig_Cloudbook\cloudbook_deployer-master"
-set ruta_agent="C:\Users\jramosdi\Desktop\Juan\SkyNNet\Orig_Cloudbook\cloudbook_agent-master"
-set ruta_maker="C:\Users\jramosdi\Desktop\Juan\SkyNNet\Orig_Cloudbook\cloudbook_maker2-master"
+set ruta_deployer=""
+set ruta_launcher=""
+set ruta_agent=""
+set ruta_maker=""
 
 :: Info, a continuacion los valores de colores cantosos y discretos
 set deployer_cantoso=c0
