@@ -5,10 +5,9 @@ rem Configuracion:
 set modo=1
 
 :: A continuacion introduce las rutas correctas de tu programa (ojo, entre comillas dobles)
-set ruta_deployer=""
-set ruta_launcher=""
-set ruta_agent=""
-set ruta_maker=""
+set ruta_deployer_launcher="C:\Users\jramosdi\Desktop\Juan\SkyNNet\sk_cloudbook\cloudbook_deployer"
+set ruta_agent="C:\Users\jramosdi\Desktop\Juan\SkyNNet\sk_cloudbook\cloudbook_agent"
+set ruta_maker="C:\Users\jramosdi\Desktop\Juan\SkyNNet\sk_cloudbook\cloudbook_maker2"
 
 :: Info, a continuacion los valores de colores cantosos y discretos
 set deployer_cantoso=c0
@@ -47,11 +46,11 @@ set instrucciones_maker=Bienvenido al maker^
  
 rem Arranco el deployer
 if %modo%==1 (set color=%deployer_cantoso%) else (set color=%deployer_discreto%)
-start "Cloudbook Deployer" cmd /k "color %color% & echo %instrucciones_deployer% & cd %ruta_deployer%" 
+start "Cloudbook Deployer" cmd /k "color %color% & echo %instrucciones_deployer% & cd %ruta_deployer_launcher%" 
 
 rem Arranco el launcher/run
 if %modo%==1 (set color=%launcher_cantoso%) else (set color=%launcher_discreto%)
-start "Cloudbook Launcher" cmd /k "color %color% & echo %instrucciones_launcher% & cd %ruta_launcher%"
+start "Cloudbook Launcher" cmd /k "color %color% & echo %instrucciones_launcher% & cd %ruta_deployer_launcher%"
 
 rem Arranco el agente
 if %modo%==1 (set color=%agent_cantoso%) else (set color=%agent_discreto%)
