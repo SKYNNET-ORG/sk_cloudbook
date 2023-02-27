@@ -7,6 +7,8 @@ import threading
 from datetime import datetime
 #SKYNNET: COMENTADO POR COMPATIBILIDAD CON RADON
 #from radon.visitors import ComplexityVisitor
+#SKYNNET: Para permitir el demake
+import shutil
 
 from graph_analyzer import graph_analyzer
 from splitter import splitter
@@ -55,6 +57,24 @@ def indent_log(level):
 			log.removeHandler(hdlr)
 	log.addHandler(filehandler)      # set the new handler
 
+
+#Funcion propia de skynnet, feature secreta
+def cloudbook_demake(project_path):
+	'''Opcion secreta, borra todo del proyecto salvo original y agents'''
+	response = input("El demake de un proyecto borra toda la carpeta distributed salvo el config, pulsa 1 para continuar")
+	if response == "1":
+		distributed_fs_path = project_path+os.sep+"distributed"
+		#rescato el config, y borro todo, distributed incluido
+		for file in os.listdir(distributed_fs_path):
+			if file=="config.json":
+				os.rename(distributed_fs_path+os.sep+file, project_path+os.sep+file)
+		#borro distributed con todo lo que tiene
+		shutil.rmtree(distributed_fs_path)
+		print("Demake con exito")
+		return True
+	else:
+		return False
+
 ################################# MAIN ########################################
 def main():
 	print (" ")
@@ -77,6 +97,7 @@ def main():
 	project_folder = ""
 	filematrix=None
 	log_level = "file"
+	demake = False #SKYNNET: para deshacer un proyecto, secreto, solo para tests
 	num_param=len(sys.argv)
 	for i in range(1,len(sys.argv)):
 		if sys.argv[i]=="-matrix":
@@ -88,6 +109,9 @@ def main():
 		if sys.argv[i]=="-log":
 			log_level=	sys.argv[i+1]
 			i=i+1
+		if sys.argv[i]=="-demake":
+			i=i+1
+			demake = True
 
 	#Assign value to invocation parameters
 	#=====================================
@@ -129,6 +153,14 @@ def main():
 	distributed_fs_path = project_path+os.sep+"distributed" 
 	agents_fs_path = project_path+os.sep+"agents"  #SKYNNET
 
+	#SKYNNET: Si se ha metido la opcion secreta demake, se llama a la funcion
+	if (demake):
+		if cloudbook_demake(project_path):
+			return 0
+		else:
+			print("Error al hacer demake, hazlo de manera manual")
+			return 0
+
 	input_matrix = ""
 	if filematrix != None:
 		filename = project_path+os.sep+"distributed"+os.sep+"matrix"+os.sep+filematrix
@@ -167,20 +199,25 @@ def main():
 				config_input = json.load(file)
 	except Exception as e:
 		logging.error(ERR_NO_CONFIG)
+		#SKYNNET: Si esta en la raiz, no creo el nuevo
+		if os.path.exists(project_path+os.sep+"config.json"):
+			os.rename(project_path+os.sep+"config.json", distributed_fs_path+os.sep+"config.json")
+		else: #lo creo
 		#SKYNNET: Si no existe config file lo creo por defecto y lo meto en distribute
-		config_content = {
-  "NAME": "Cambiar esto",
-  "DESCRIPTION": "Config file created automatically",
-  "NUM_DESIRED_AGENTS": 4,
-  "AGENT_GRANT_INTERVAL": 5,
-  "AGENT_STATS_INTERVAL": 5,
-  "LAN": True,
-  "CLOUDBOOK_MAXTHREADS": 0,	
-  "NON-RELIABLE_AGENT_MODE": True, 
-  "AGENT0_ONLY_DU0":True	
-}
-		with open(config_file, 'w') as file:
-			json.dump(config_content,file)
+			config_content = {
+	  "NAME": "Cambiar esto",
+	  "DESCRIPTION": "Config file created automatically",
+	  "NUM_DESIRED_AGENTS": 4,
+	  "AGENT_GRANT_INTERVAL": 5,
+	  "AGENT_STATS_INTERVAL": 5,
+	  "LAN": True,
+	  "CLOUDBOOK_MAXTHREADS": 0,	
+	  "NON-RELIABLE_AGENT_MODE": True, 
+	  "AGENT0_ONLY_DU0":True	
+	}
+			with open(config_file, 'w') as file:
+				json.dump(config_content,file)
+		#SKYNNET: El config file esta creado o movido correctamente
 		with open(config_file, 'r') as file:
 				config_input = json.load(file)	
 		#raise e #SKYNNET: Ya no es un error, he generado otro config nuevo
@@ -189,10 +226,10 @@ def main():
 	source_fs_path = project_path+os.sep+"original"
 	if not os.path.exists(source_fs_path):
 		os.makedirs(source_fs_path)
-	#SKYNNET: Buscar ficheros python y meterlos en source
-	for file in os.listdir(project_path):
-		if file.endswith(".py"):
-			os.rename(project_path+os.sep+file, source_fs_path+os.sep+file)
+		#SKYNNET: Buscar ficheros python y meterlos en source
+		for file in os.listdir(project_path):
+			if file.endswith(".py"):
+				os.rename(project_path+os.sep+file, source_fs_path+os.sep+file)
 			
 	#Generates de config dict for the maker process
 	config_dict = {
