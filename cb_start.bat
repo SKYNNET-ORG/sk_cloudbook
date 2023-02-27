@@ -1,8 +1,8 @@
 
-rem Configuracion:
-:: Para modo cantoso pon modo=1
-:: Para modo discreto pon modo=0 (Cualquier valor distinto de 1 vale)
+echo off
+:: Pulsando enter, se queda en modo 1, si pulsas otra tecla se cambia a modo discreto
 set modo=1
+set /p "modo=Bienvenido a Cloudbook, pulsa enter para continuar, cualquier otra tecla para modo discreto: "
 
 :: A continuacion introduce las rutas correctas de tu programa (ojo, entre comillas dobles)
 set ruta_deployer_launcher="C:\Users\jramosdi\Desktop\Juan\SkyNNet\sk_cloudbook\cloudbook_deployer"
