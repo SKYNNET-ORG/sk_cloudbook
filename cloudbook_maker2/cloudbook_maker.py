@@ -205,7 +205,7 @@ def main():
 		else: #lo creo
 		#SKYNNET: Si no existe config file lo creo por defecto y lo meto en distribute
 			config_content = {
-	  "NAME": "Cambiar esto",
+	  "NAME": project_folder,
 	  "DESCRIPTION": "Config file created automatically",
 	  "NUM_DESIRED_AGENTS": 4,
 	  "AGENT_GRANT_INTERVAL": 5,

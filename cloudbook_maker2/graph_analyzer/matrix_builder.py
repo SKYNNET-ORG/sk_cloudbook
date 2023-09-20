@@ -99,6 +99,15 @@ def get_program_info(config_dict):
 		nonblocking_inv = False
 		nonblocking_inv_index = 0
 		for line in source_file:
+			'''if remove_lines:
+				#print("remove lines activo",line)
+				logging.debug("Line removed: %s",line)
+				line = line.strip()
+				if "#" not in line:
+					source += "#"+line
+					print("#"+line)
+				else:
+					source += line'''
 			if "#__CLOUDBOOK:SYNC__" in line:
 				source += line.replace("#__CLOUDBOOK:SYNC__", "CLOUDBOOK_SYNC()")
 				continue
@@ -122,12 +131,21 @@ def get_program_info(config_dict):
 				remove_lines = False
 				source+=line #is written in order to not change the source code (it will be used to get pragmas)
 			elif "__CLOUDBOOK__" in line:
-				source+=line.replace("__CLOUDBOOK__","__CLOUDBOOK__()")
+				if not remove_lines:
+					source+=line.replace("__CLOUDBOOK__","__CLOUDBOOK__()")
+				else:
+					logging.debug("Line removed: %s",line)
+					source+="#"+line #SKYNNET: Si quieres eliminar lineas que usan la vble cloudbook
 				continue
 			elif "__CLOUDBOOK:NONBLOCKING_INV__" in line:
 				source+=line
 				nonblocking_inv = True
 				continue
+			#if remove_lines == True: #TODO esto deberia estar debajo, pero no se mete en el else
+				#logging.debug("Line removed: %s",line)
+				#line = line.strip()
+				#source += "#"+line
+				#print("#"+line)
 			else:
 				if nonblocking_inv and not remove_lines:
 					line_tabs = line.rstrip().count("\t")
@@ -163,8 +181,9 @@ def get_program_info(config_dict):
 						nonblocking_inv_index += 1
 				if not remove_lines:
 					source += line
-				else:
+				else:#TODO: No se mete por este else
 					logging.debug("Line removed: %s",line)
+					#line = line.strip()
 					source += "#"+line
 		
 		#file to test the source code in "source"

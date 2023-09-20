@@ -147,6 +147,13 @@ def get_final_dus(config_dict):
 			if aux_fun in config_dict["global_vars"]["global"]:# + config_dict["global_vars"]["safe"]:
 				config_dict["critical_dus"].append(du)
 	config_dict["critical_dus"] = list(set(config_dict["critical_dus"]))
+	#SKYNNET Quitar funciones de dus, que ya esten en la du0, las funciones du0 no deberian tener replicas
+	logging.debug(config_dict["dus"])
+	for du in config_dict["dus"]:
+		for fun in config_dict["dus"][du]:
+			if fun in du0_functions and du != 'du_0':
+				logging.debug(fun)
+				config_dict["dus"][du].remove(fun)
 	logging.debug("	Dus:")
 	for du in config_dict["dus"]:
 		logging.debug("		%s:%s",du,config_dict["dus"][du])
