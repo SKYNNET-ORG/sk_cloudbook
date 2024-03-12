@@ -207,7 +207,7 @@ def main():
 			config_content = {
 	  "NAME": project_folder,
 	  "DESCRIPTION": "Config file created automatically",
-	  "NUM_DESIRED_AGENTS": 4,
+	  "NUM_DESIRED_AGENTS": 2,
 	  "AGENT_GRANT_INTERVAL": 5,
 	  "AGENT_STATS_INTERVAL": 5,
 	  "LAN": True,

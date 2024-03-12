@@ -295,8 +295,16 @@ class RewriteAssginationsAsInvocations(ast.NodeTransformer):
 					if clean_file_name+var.value.id in function_list:
 						#invocation_list.append({"type":"global","name": clean_file_name+var.value.id,"line": node.lineno, "offset":node.col_offset, "value": 1})
 						global_var_names.append(var.value.id)
-						#logging.debug("A VER: %s",var.slice.value.id)
-						subscript_index.append(var.slice.value)
+						logging.debug(f"SKYNNET: {old_node}")
+						##logging.debug("SKYNNETA VER: %s",var.slice.id)
+						##logging.debug("A VER: %s",var.slice.value.id)
+						##subscript_index.append(var.slice.value)
+						##subscript_index.append(var.slice.id) #Arreglo rapido no funciona el siguiente try except tambien
+						try:
+							subscript_index.append(var.slice.value)
+						except:
+							subscript_index.append(var.slice)
+						logging.debug("=================OJO===========================")
 						logging.debug("		Assign %s",clean_file_name+var.value.id)
 					else:
 						return node
@@ -358,6 +366,7 @@ class RewriteAssginationsAsInvocations(ast.NodeTransformer):
 			list_index.ctx = ast.Load()
 			list_index.elts = []
 			for i in subscript_index:
+				logging.debug(f"SKYNNET subscript index {i} {type(i)}") ##Skynnet debug
 				list_index.elts.append(i)
 			kwargs_dict.values.append(list_index)
 			#creo diccionario de parametros
@@ -399,6 +408,7 @@ class RewriteAssginationsAsInvocations(ast.NodeTransformer):
 			logging.debug("%s	invoked function: 	 %s",tabs,invoked_fun)
 			logging.debug("%s	invoked du:		 	 %s",tabs,invoked_du)
 			logging.debug("%s	args:    		 	 %s",tabs,astunparse.unparse(arg_list).replace("\n",""))
+			logging.debug(kwargs_dict) ##Debug en skynnet
 			logging.debug("%s	kwargs:	    	 	 %s",tabs,astunparse.unparse(kwargs_dict).replace("\n",""))
 			#logging.debug("%s	global var:		 	 %s",tabs,global_var_modification)
 			#logging.debug("%s	parallel invocation: %s",tabs,parallel_invocation)
