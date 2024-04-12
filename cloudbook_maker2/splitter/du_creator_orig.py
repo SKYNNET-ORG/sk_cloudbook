@@ -5,7 +5,7 @@
 import logging
 import os
 import ast
-#import ast
+import astunparse
 import copy
 
 from . import translator
@@ -50,7 +50,7 @@ def create_du(du_name,config_dict):
 						cad = cad + " as " + import_element["alias"]
 				f.write(cad+"\n")
 
-			#f.write(ast.unparse(import_element))
+			#f.write(astunparse.unparse(import_element))
 	#f.write("invoker = None")
 	#write global vars
 	#nonshared y const
@@ -65,7 +65,7 @@ def create_du(du_name,config_dict):
 
 	#global y safe
 	for single_class in config_dict["program_data"]["classes"]:
-		f.write(ast.unparse(config_dict["program_data"]["classes"][single_class]))
+		f.write(astunparse.unparse(config_dict["program_data"]["classes"][single_class]))
 		f.write("\n")
 	for function in config_dict["dus"][du_name]:
 		file = function[:function.rfind(".")]
@@ -76,7 +76,7 @@ def create_du(du_name,config_dict):
 		if function in config_dict["pragmas"]["parallel"]: #si es paralela escribo la funcion lanzahilos, y traduzco el nombre de la parallel
 			#escribo el lanza hilos, y cambio nombre al nodo
 			function_name = config_dict["program_data"]["functions"][function].name
-			function_args = ast.unparse(config_dict["program_data"]["functions"][function].args).replace("\n","")
+			function_args = astunparse.unparse(config_dict["program_data"]["functions"][function].args).replace("\n","")
 			function_args_node = config_dict["program_data"]["functions"][function].args
 			function_def = "\ndef "+function_name+"("+function_args+"):"
 			function_body = function_body_text(config_dict, function_name, function_args, function_args_node)
@@ -87,7 +87,7 @@ def create_du(du_name,config_dict):
 		if function in config_dict["pragmas"]["nonblocking_def"]:
 			#escribo el lanza hilos, y cambio nombre al nodo
 			function_name = config_dict["program_data"]["functions"][function].name
-			function_args = ast.unparse(config_dict["program_data"]["functions"][function].args).replace("\n","")
+			function_args = astunparse.unparse(config_dict["program_data"]["functions"][function].args).replace("\n","")
 			function_args_node = config_dict["program_data"]["functions"][function].args
 			function_def = "\ndef "+function_name+"("+function_args+"):"
 			function_body = function_body_text(config_dict, function_name, function_args, function_args_node, "nonblocking")
@@ -96,9 +96,8 @@ def create_du(du_name,config_dict):
 			translator.translateNonBlockingDefFunctionName(config_dict["program_data"]["functions"][function])
 		if function in config_dict["program_data"]["functions"]: #Escribo las funciones de la du tal cual estan los nodos
 			##print("Voy a escribir en",du_name,"la funcion", function)
-			cadena = ast.unparse(config_dict["program_data"]["functions"][function])
+			cadena = astunparse.unparse(config_dict["program_data"]["functions"][function])
 			f.write(cadena)
-		f.write("\n")
 	f.write(cloudbook_sync_code(config_dict))
 	f.write(cloudbook_critical_section_code())
 	if filename == config_dict["output_dir"]+os.sep+"du_default.py":
@@ -117,9 +116,9 @@ def main():
 
 def function_body_text(config_dict, function_name, function_args, function_args_node, function_type = "parallel"): #Es necesario el return?
 	#func_args = function_args.vararg
-	#func_args = astu.unparse(func_args)
+	#func_args = astunparse.unparse(func_args)
 	#func_kwargs = function_args.kwarg
-	#func_kwargs = astu.unparse(func_kwargs)
+	#func_kwargs = astunparse.unparse(func_kwargs)
 	##print("ARGUMENTOS:",ast.dump(function_args_node))
 	kwargs_len = len(function_args_node.defaults)
 	args_len = len(function_args_node.args)
@@ -142,7 +141,7 @@ def function_body_text(config_dict, function_name, function_args, function_args_
 			#kwargs_dict[function_args_node.args[-i].arg] = function_args_node.defaults[-i].value
 			kwargs_dict2.keys.append(aux_key)
 			kwargs_dict2.values.append(aux_name)
-	kwargs_dict2 = ast.unparse(kwargs_dict2).replace("\n","")
+	kwargs_dict2 = astunparse.unparse(kwargs_dict2).replace("\n","")
 	##print("KWARGS_DICT:",kwargs_dict)
 	##print("KWARGS_DICT2:",kwargs_dict2)
 	for i in range(len(function_args_node.args)-kwargs_len):
@@ -384,7 +383,7 @@ def noblocking_invocations_thread_launcher(config_dict, file):
 	for function in config_dict["nonblocking_invocations"]:
 		for invocation in config_dict["nonblocking_invocations"][function]:
 			function_name = config_dict["program_data"]["functions"][function].name
-			function_args = ast.unparse(config_dict["program_data"]["functions"][function].args).replace("\n","")
+			function_args = astunparse.unparse(config_dict["program_data"]["functions"][function].args).replace("\n","")
 			function_args_node = config_dict["program_data"]["functions"][function].args
 			function_def = "\ndef "+invocation+"("+function_args+"):"
 			function_body = function_body_text(config_dict,function_name, function_args, function_args_node, "nonblocking_inv")
@@ -397,4 +396,4 @@ def noblocking_invocations_target_code(config_dict,file):
 		#new_function = config_dict["program_data"]["functions"][function]
 		new_function = config_dict["nonblocking_inv_nodes"][function]
 		new_function.name = "nonblocking_inv_"+ config_dict["program_data"]["functions"][function].name
-		file.write(ast.unparse(new_function))
+		file.write(astunparse.unparse(new_function))
