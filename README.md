@@ -1,4 +1,4 @@
-# sk_cloudbook
+# sk_cloudbook (este es un repositorio provisional. El definitivo es SKYNNET)
 Cloudbook para SkyNNet
 
 Fichero .bat para arrancar las consolas necesarias:
