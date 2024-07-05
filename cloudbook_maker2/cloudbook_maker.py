@@ -13,6 +13,8 @@ import shutil
 from graph_analyzer import graph_analyzer
 from splitter import splitter
 
+from sk_tool import sk_tool
+
 ##CONSTANTS
 ERR_NO_PROJECT = "ERROR: Option -project_folder missing"
 ERR_NO_CONFIG = "ERROR: Distributed/config.json not available, a general config.json will be created" #SKYNNET: esto deberia ser error? o warning?
@@ -98,6 +100,7 @@ def main():
 	filematrix=None
 	log_level = "file"
 	demake = False #SKYNNET: para deshacer un proyecto, secreto, solo para tests
+	skynnet = False
 	num_param=len(sys.argv)
 	for i in range(1,len(sys.argv)):
 		if sys.argv[i]=="-matrix":
@@ -112,6 +115,9 @@ def main():
 		if sys.argv[i]=="-demake":
 			i=i+1
 			demake = True
+		if sys.argv[i]=="-skynnet":
+			i=i+1
+			skynnet = True
 
 	#Assign value to invocation parameters
 	#=====================================
@@ -207,7 +213,7 @@ def main():
 			config_content = {
 	  "NAME": project_folder,
 	  "DESCRIPTION": "Config file created automatically",
-	  "NUM_DESIRED_AGENTS": 2,
+	  "NUM_DESIRED_AGENTS": 4,
 	  "AGENT_GRANT_INTERVAL": 5,
 	  "AGENT_STATS_INTERVAL": 5,
 	  "LAN": True,
@@ -257,6 +263,11 @@ def main():
 				"nonblocking_inv_nodes":{},
 				"log_file_handler": logging.FileHandler('./cloudbook_maker.log', 'a')
 				} 
+	#Skynnet: Step 0, make sk_tool
+	if skynnet==True:
+		sk_files = os.listdir(config_dict["input_dir"])
+		for sk_file in sk_files:
+			sk_tool.main_skynnet(config_dict["input_dir"],sk_file,config_dict["num_dus"])
 
 	#Init the maker
 	start_time = time.time()
