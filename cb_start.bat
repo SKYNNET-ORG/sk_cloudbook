@@ -44,7 +44,7 @@ set instrucciones_agent=Bienvenido al agente^
 set instrucciones_maker=Bienvenido al maker^
 %nl%===================^
 %nl%	Uso:^
-%nl%	py cloudbook_maker.py -project_folder nombre_proyecto^
+%nl%	py cloudbook_maker.py -project_folder nombre_proyecto [-skynnet]^
 %nl%    ^
 %nl%	Para uso avanzado del agente ejecuta py cloudbook_maker.py para ver las instrucciones
 
