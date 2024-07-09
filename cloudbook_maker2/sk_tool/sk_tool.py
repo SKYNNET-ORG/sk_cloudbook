@@ -756,7 +756,7 @@ def process_skynnet_code(code, skynnet_config, fout, num_subredes, block_number)
     #Paso 8: Funcion skynnet block que divide datos, crea y entrena modelos
     #Se llama block por el bloque skynnet que gestiona, puede trabajar con varios modelos
     for i in sk_dict['data_test']:
-        print(i)
+        #print(i)
         remover = NodeRemover(i)
         node_data_vars_reduced = remover.visit(node_data_vars_reduced)
     parallel_cloudbook_label = Expr(value=Comment(value='#__CLOUDBOOK:PARALLEL__'))
