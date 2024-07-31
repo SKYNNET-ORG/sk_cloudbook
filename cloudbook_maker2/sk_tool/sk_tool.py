@@ -1114,6 +1114,18 @@ def main_skynnet(carpeta,file,n_subredes):
     ##Cambiamos indentacion de espacios a tabuladores para cloudbook
     tab_indent(sk_file)
     #Se borra el fichero original y dejar el sk_xxx
+    nueva_ruta = orig_file.replace('original', 'distributed\\not_deconstructed\\')
+    directorio = os.path.dirname(nueva_ruta)
+
+    # Crear los directorios si no existen
+    os.makedirs(directorio, exist_ok=True)
+
+    # Ruta completa para el nuevo fichero
+    #fichero_nueva_ruta = os.path.join(directorio, 'mlp2.py')
+    with open(orig_file,'r') as file:
+        contenido = file.read()
+    with open(nueva_ruta, 'w') as file:
+        file.write(contenido)
     os.remove(orig_file)
 
 def main(test=False):

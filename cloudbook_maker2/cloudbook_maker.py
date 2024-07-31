@@ -101,6 +101,14 @@ def main():
 	log_level = "file"
 	demake = False #SKYNNET: para deshacer un proyecto, secreto, solo para tests
 	skynnet = False
+	skynnet_value = None
+
+	def is_integer(s):
+		try:
+			int(s)
+			return True
+		except ValueError:
+			return False
 	num_param=len(sys.argv)
 	for i in range(1,len(sys.argv)):
 		if sys.argv[i]=="-matrix":
@@ -116,8 +124,11 @@ def main():
 			i=i+1
 			demake = True
 		if sys.argv[i]=="-skynnet":
-			i=i+1
+			#i=i+1
 			skynnet = True
+			if i + 1 < len(sys.argv) and is_integer(sys.argv[i + 1]):
+				skynnet_value = int(sys.argv[i + 1])
+			i += 1
 
 	#Assign value to invocation parameters
 	#=====================================
@@ -265,9 +276,11 @@ def main():
 				} 
 	#Skynnet: Step 0, make sk_tool
 	if skynnet==True:
+		if skynnet_value == None:
+			skynnet_value = config_dict["num_dus"]
 		sk_files = os.listdir(config_dict["input_dir"])
 		for sk_file in sk_files:
-			sk_tool.main_skynnet(config_dict["input_dir"],sk_file,config_dict["num_dus"])
+			sk_tool.main_skynnet(config_dict["input_dir"],sk_file,skynnet_value)
 
 	#Init the maker
 	start_time = time.time()
